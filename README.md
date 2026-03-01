@@ -1,13 +1,13 @@
 # Yusuf Baig — Personal Portfolio
 
-> Festival-inspired portfolio. Live at **https://yourusername.github.io**
+> Live at **https://yourusername.github.io**
 
 ---
 
 ## File Structure
 
 ```
-yourusername.github.io/
+yusufmbaig.github.io/
 │
 ├── index.html              # Homepage (about, skills, life, featured projects, contact)
 ├── projects.html           # Full projects page (cards + expandable case studies)
