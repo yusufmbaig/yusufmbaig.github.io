@@ -1,6 +1,6 @@
 # Yusuf Baig — Personal Portfolio
 
-> Live at **https://yourusername.github.io**
+> Live at **https://yusufmbaig.github.io**
 
 ---
 
