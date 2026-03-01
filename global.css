@@ -1,0 +1,516 @@
+/*
+  global.css — Yusuf Baig Portfolio
+  ====================================
+  Shared design system used by every page.
+  Page-specific styles live inline in each HTML file.
+
+  TABLE OF CONTENTS
+  ─────────────────
+  01  Reset & Custom Properties
+  02  Base Body
+  03  Noise Overlay
+  04  Custom Cursor
+  05  Animated Background Blobs
+  06  Scroll Progress Bar
+  07  Navigation
+  08  Footer
+  09  Shared Layout Utilities
+  10  Typography Utilities
+  11  Buttons
+  12  Tags
+  13  Back Link
+  14  Reveal Animation
+  15  Keyframe Definitions
+  16  Scrollbar
+  17  Responsive / Media Queries
+*/
+
+
+/* ── 01  RESET & CUSTOM PROPERTIES ─────────────────────────────── */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  /* ── Backgrounds ── */
+  --bg:       #070710;
+  --surface:  #0e0e1c;
+  --surface2: #13131f;
+
+  /* ── Text ── */
+  --ink:   #f0efed;
+  --muted: #7878a0;
+
+  /* ── Accent palette (festival-inspired) ── */
+  --c1: #ff4d6d;   /* hot pink  — primary CTA, eyebrow lines      */
+  --c2: #ffbe0b;   /* yellow    — gradient partner                 */
+  --c3: #3bceac;   /* teal      — available status, hobbies card   */
+  --c4: #8338ec;   /* violet    — background blob, games card      */
+  --c5: #ff6b35;   /* orange    — habits card                      */
+
+  /* ── UI tokens ── */
+  --border: rgba(255, 255, 255, 0.07);
+  --radius: 20px;
+  --shadow: 0 20px 40px rgba(0, 0, 0, 0.38);
+
+  /* ── Typography ── */
+  --font:      'Syne',    sans-serif;   /* display headings, nav, labels */
+  --body-font: 'DM Sans', sans-serif;   /* body copy, descriptions       */
+}
+
+html { scroll-behavior: smooth; }
+
+
+/* ── 02  BASE BODY ──────────────────────────────────────────────── */
+
+body {
+  background:  var(--bg);
+  color:       var(--ink);
+  font-family: var(--body-font);
+  font-weight: 300;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+  cursor: none;   /* replaced by custom cursor; reverted on touch via media query */
+}
+
+
+/* ── 03  NOISE OVERLAY ──────────────────────────────────────────── */
+/* Subtle film-grain texture rendered as a fixed SVG data URI */
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+  opacity: 0.3;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+}
+
+
+/* ── 04  CUSTOM CURSOR ──────────────────────────────────────────── */
+/*
+  Two-part cursor: a small filled dot (#cursor) that tracks the mouse
+  exactly, and a larger hollow ring (#cursor-ring) that lags behind via
+  CSS transition. On hover over interactive elements, both expand and
+  cycle through the accent colour palette (handled in components.js).
+*/
+
+#cursor {
+  position: fixed;
+  width: 12px;
+  height: 12px;
+  background: var(--c1);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.25s, height 0.25s, background 0.25s;
+  mix-blend-mode: exclusion;
+}
+
+#cursor-ring {
+  position: fixed;
+  width: 36px;
+  height: 36px;
+  border: 1.5px solid rgba(255, 77, 109, 0.5);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  /* left/top track mouse with lag; size/colour transition on hover */
+  transition: left 0.1s ease, top 0.1s ease, width 0.3s, height 0.3s, border-color 0.3s;
+}
+
+
+/* ── 05  ANIMATED BACKGROUND BLOBS ──────────────────────────────── */
+/*
+  Five large, blurred colour circles that float behind all content.
+  They also receive a subtle Y-axis parallax on scroll (applied via JS).
+  #blobs is position:fixed so blobs remain visible across all sections.
+*/
+
+#blobs {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.13;
+  animation: blobFloat 20s ease-in-out infinite;
+}
+
+.blob-1 { width: 650px; height: 650px; background: var(--c4); top: -250px;  left: -200px; animation-duration: 22s; }
+.blob-2 { width: 420px; height: 420px; background: var(--c1); top: 30%;     right: -100px; animation-duration: 18s; animation-delay: -5s; }
+.blob-3 { width: 520px; height: 520px; background: var(--c3); bottom: -200px; left: 15%;  animation-duration: 26s; animation-delay: -11s; }
+.blob-4 { width: 320px; height: 320px; background: var(--c2); top: 60%;     left: -80px;  animation-duration: 16s; animation-delay: -3s; }
+.blob-5 { width: 380px; height: 380px; background: var(--c5); bottom: 15%;  right: 8%;    animation-duration: 21s; animation-delay: -8s; }
+
+
+/* ── 06  SCROLL PROGRESS BAR ────────────────────────────────────── */
+/* Thin gradient line just below the nav; width driven by scroll % via JS */
+
+#progress {
+  position: fixed;
+  top: 58px;   /* matches nav height */
+  left: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--c1), var(--c2), var(--c4));
+  z-index: 600;
+  width: 0%;
+  transition: width 0.08s linear;
+}
+
+
+/* ── 07  NAVIGATION ─────────────────────────────────────────────── */
+/* Fixed top bar, injected by components.js into #nav-mount */
+
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 500;
+  background: rgba(7, 7, 16, 0.75);
+  backdrop-filter: saturate(180%) blur(24px);
+  -webkit-backdrop-filter: saturate(180%) blur(24px);
+  border-bottom: 1px solid var(--border);
+}
+
+.nav-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2.5rem;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-logo {
+  font-family: var(--font);
+  font-size: 1rem;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+
+.nav-logo em {
+  color: var(--c1);
+  font-style: normal;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+  list-style: none;
+}
+
+.nav-links a {
+  font-family: var(--font);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-decoration: none;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: color 0.2s;
+  position: relative;
+}
+
+/* Animated underline */
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 2px;
+  background: var(--c1);
+  transition: width 0.3s;
+  border-radius: 2px;
+}
+
+.nav-links a:hover         { color: var(--ink); }
+.nav-links a:hover::after  { width: 100%; }
+
+/* Active page state — set by components.js via .nav-active class */
+.nav-links a.nav-active              { color: var(--ink); }
+.nav-links a.nav-active::after       { width: 100%; }
+
+
+/* ── 08  FOOTER ─────────────────────────────────────────────────── */
+/* Injected by components.js into #footer-mount */
+
+footer {
+  background: var(--surface);
+  border-top: 1px solid var(--border);
+  padding: 2.2rem 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+
+footer p {
+  font-family: var(--font);
+  font-size: 0.65rem;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.05em;
+}
+
+.footer-star {
+  color: var(--c1);
+  margin: 0 0.5rem;
+}
+
+
+/* ── 09  SHARED LAYOUT UTILITIES ─────────────────────────────────── */
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 2.5rem;
+}
+
+/* All non-hero sections share this vertical breathing room */
+section { padding: 110px 0; position: relative; z-index: 1; }
+
+.divider { width: 100%; height: 1px; background: var(--border); }
+
+
+/* ── 10  TYPOGRAPHY UTILITIES ────────────────────────────────────── */
+
+/* Small uppercase label above a section title */
+.section-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-family: var(--font);
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 1.2rem;
+}
+
+.section-eyebrow span {
+  display: inline-block;
+  width: 28px; height: 2px;
+  background: var(--c1);
+  border-radius: 2px;
+}
+
+.section-title {
+  font-family: var(--font);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  color: var(--ink);
+  margin-bottom: 1.2rem;
+}
+
+.section-sub {
+  font-size: 1rem;
+  color: var(--muted);
+  max-width: 520px;
+  line-height: 1.7;
+}
+
+/* Gradient word highlight used in section titles */
+.title-accent {
+  display: inline-block;
+  background: linear-gradient(90deg, var(--c1), var(--c2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+
+/* ── 11  BUTTONS ─────────────────────────────────────────────────── */
+
+.btn {
+  display: inline-block;
+  font-family: var(--font);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.9rem 1.9rem;
+  border-radius: 980px;
+  text-decoration: none;
+  transition: all 0.25s;
+  cursor: none;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--c1);
+  color: #fff;
+  box-shadow: 0 0 30px rgba(255, 77, 109, 0.35);
+}
+
+.btn-primary:hover {
+  transform: scale(1.05) translateY(-2px);
+  box-shadow: 0 0 50px rgba(255, 77, 109, 0.55);
+}
+
+.btn-outline {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-outline:hover {
+  color: var(--ink);
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+/* Smaller variant used in project cards and detail panels */
+.btn-sm {
+  font-size: 0.62rem;
+  padding: 0.6rem 1.2rem;
+}
+
+
+/* ── 12  TAGS ────────────────────────────────────────────────────── */
+/* Technology/skill pill badges used across project rows and cards */
+
+.tag {
+  display: inline-block;
+  font-family: var(--font);
+  font-size: 0.55rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 0.25rem 0.7rem;
+  border-radius: 980px;
+  transition: border-color 0.2s, color 0.2s;
+}
+
+
+/* ── 13  BACK LINK ───────────────────────────────────────────────── */
+/* "← Back to home" used on sub-pages */
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.2s, gap 0.2s;
+  margin-bottom: 2.5rem;
+}
+
+.back-link:hover {
+  color: var(--ink);
+  gap: 0.8rem;
+}
+
+
+/* ── 14  REVEAL ANIMATION ────────────────────────────────────────── */
+/*
+  Elements marked .reveal start hidden and slide up into view.
+  The IntersectionObserver in components.js adds .visible when
+  the element enters the viewport. Stagger siblings with:
+  .reveal-delay-1, .reveal-delay-2, .reveal-delay-3
+*/
+
+.reveal {
+  opacity: 0;
+  transform: translateY(32px);
+  transition:
+    opacity   0.9s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.9s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reveal.visible       { opacity: 1; transform: translateY(0); }
+.reveal-delay-1       { transition-delay: 0.10s; }
+.reveal-delay-2       { transition-delay: 0.22s; }
+.reveal-delay-3       { transition-delay: 0.34s; }
+
+
+/* ── 15  KEYFRAME DEFINITIONS ────────────────────────────────────── */
+
+/* Hero intro sequence */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(36px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+  to { opacity: 1; }
+}
+
+/* Animated gradient background shift (hero name, etc.) */
+@keyframes gradShift {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+
+/* Background blob floating motion */
+@keyframes blobFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  25%       { transform: translate(50px, -70px) scale(1.06); }
+  50%       { transform: translate(-40px, 50px) scale(0.94); }
+  75%       { transform: translate(60px, 35px) scale(1.04); }
+}
+
+/* Pulsing availability dot */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(59, 206, 172, 0.5);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(0.8);
+    box-shadow: 0 0 0 7px rgba(59, 206, 172, 0);
+  }
+}
+
+/* Marquee ticker scroll */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+
+/* ── 16  SCROLLBAR ───────────────────────────────────────────────── */
+
+::-webkit-scrollbar              { width: 4px; }
+::-webkit-scrollbar-track        { background: var(--bg); }
+::-webkit-scrollbar-thumb        { background: #2a2a45; border-radius: 2px; }
+
+
+/* ── 17  RESPONSIVE / MEDIA QUERIES ─────────────────────────────── */
+
+/* Tablet and below */
+@media (max-width: 768px) {
+  body { cursor: auto; }
+  #cursor, #cursor-ring { display: none; }
+  .nav-links { display: none; }   /* TODO: add hamburger menu if desired */
+  .container { padding: 0 1.5rem; }
+  footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+}

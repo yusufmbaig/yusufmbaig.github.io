@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<!--
+  projects.html — Yusuf Baig Portfolio — All Projects
+  =====================================================
+  Displays ALL projects from the PROJECTS array in assets/js/components.js.
+
+  Layout
+  ──────
+  1. Page hero with back link and title
+  2. Featured Work — 2-column card grid (projects where featured: true)
+  3. All Work — expandable accordion list of every project
+
+  To add a project: edit the PROJECTS array in assets/js/components.js.
+  No changes to this file are needed when adding projects.
+-->
+<html lang="en">
+<head>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- TODO: Update meta values with your real details -->
+  <title>Projects — Yusuf Baig</title>
+  <meta name="description" content="All projects built by Yusuf Baig — case studies, challenges, and what I learned." />
+  <meta name="author"      content="Yusuf Baig" />
+  <meta name="robots"      content="index, follow" />
+  <link rel="canonical"    href="https://yourusername.github.io/projects.html" />
+
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://yourusername.github.io/projects.html" />
+  <meta property="og:title"       content="Projects — Yusuf Baig" />
+  <meta property="og:description" content="All projects built by Yusuf Baig — case studies, challenges, and what I learned." />
+  <meta property="og:image"       content="https://yourusername.github.io/assets/og-image.png" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+
+  <!-- Shared design system -->
+  <link rel="stylesheet" href="assets/css/global.css" />
+
+  <!-- ── Page-specific styles ── -->
+  <style>
+
+    /* ── PAGE HERO ────────────────────────────────────────────── */
+    /*
+      Shorter than the homepage hero — no full viewport height.
+      Sits directly below the fixed nav (padding-top: 58px).
+    */
+    .page-hero {
+      padding: 140px 0 80px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .page-hero-inner {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 2.5rem;
+    }
+
+    .page-hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-family: var(--font);
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      margin-bottom: 1.8rem;
+    }
+
+    .page-hero-eyebrow span {
+      display: inline-block;
+      width: 28px; height: 2px;
+      background: var(--c1);
+      border-radius: 2px;
+    }
+
+    .page-hero h1 {
+      font-family: var(--font);
+      font-size: clamp(3.5rem, 8vw, 8rem);
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      line-height: 0.95;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.2s forwards;
+    }
+
+    .page-hero h1 .outline {
+      -webkit-text-fill-color: transparent;
+      -webkit-text-stroke: 2px rgba(240, 239, 237, 0.22);
+    }
+
+    .page-hero-sub {
+      font-size: 1rem;
+      color: var(--muted);
+      max-width: 420px;
+      line-height: 1.75;
+      opacity: 0;
+      animation: fadeUp 0.9s ease 0.4s forwards;
+    }
+
+    /* ── FEATURED CARDS SECTION ──────────────────────────────── */
+    .feat-section { background: var(--surface); }
+
+    .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.2rem;
+      margin-top: 3.5rem;
+    }
+
+    .feat-card {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Coloured left accent bar — colour from --card-accent (set per card via JS) */
+    .feat-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; bottom: 0;
+      width: 3px;
+      background: var(--card-accent, var(--c1));
+      transform: scaleY(0);
+      transform-origin: top;
+      transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Top glow bloom on hover */
+    .feat-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 40%;
+      background: radial-gradient(ellipse at top, rgba(255, 77, 109, 0.04), transparent 70%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .feat-card:hover {
+      border-color: rgba(255, 255, 255, 0.13);
+      transform: translateY(-5px);
+      box-shadow: var(--shadow);
+    }
+
+    .feat-card:hover::before { transform: scaleY(1); }
+    .feat-card:hover::after  { opacity: 1; }
+
+    .feat-card-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+
+    .feat-card-index {
+      font-family: var(--font);
+      font-size: 0.62rem;
+      font-weight: 700;
+      color: var(--card-accent, var(--c1));
+      letter-spacing: 0.12em;
+    }
+
+    .feat-card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      justify-content: flex-end;
+    }
+
+    .feat-card-title {
+      font-family: var(--font);
+      font-size: 1.6rem;
+      font-weight: 800;
+      letter-spacing: -0.04em;
+      color: var(--ink);
+      line-height: 1.1;
+    }
+
+    .feat-card-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.7;
+      flex: 1;   /* pushes links to bottom of card */
+    }
+
+    .feat-card-links {
+      display: flex;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+      margin-top: auto;
+    }
+
+    /* ── ALL PROJECTS ACCORDION SECTION ──────────────────────── */
+    .all-section { background: transparent; }
+
+    .all-section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 1rem;
+    }
+
+    .proj-count {
+      font-family: var(--font);
+      font-size: 0.65rem;
+      font-weight: 700;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    /* ── Single accordion row ── */
+    .proj-row {
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      outline: none;
+      transition: background 0.2s;
+    }
+
+    .proj-row:first-child  { border-top: 1px solid var(--border); }
+    .proj-row:focus-visible { box-shadow: inset 0 0 0 2px var(--c1); }
+
+    /* Header row — always visible */
+    .proj-row-header {
+      display: grid;
+      grid-template-columns: 64px 1fr 40px;
+      align-items: center;
+      gap: 1.5rem;
+      padding: 1.8rem 0;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Background sweep on hover */
+    .proj-row::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, rgba(255, 77, 109, 0.03), rgba(131, 56, 236, 0.03));
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    .proj-row:hover::before, .proj-row.is-open::before { opacity: 1; }
+
+    .proj-index {
+      font-family: var(--font);
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: var(--c1);
+      letter-spacing: 0.12em;
+    }
+
+    .proj-row-meta { min-width: 0; }
+
+    .proj-row-title {
+      font-family: var(--font);
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      color: var(--ink);
+      margin-bottom: 0.5rem;
+      transition: color 0.2s;
+    }
+
+    .proj-row:hover .proj-row-title { color: var(--c1); }
+    .proj-row.is-open .proj-row-title { color: var(--c1); }
+
+    .proj-row-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+
+    /* +/− toggle icon */
+    .proj-toggle {
+      font-family: var(--font);
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--muted);
+      transition: color 0.2s, transform 0.3s;
+      text-align: center;
+      line-height: 1;
+    }
+
+    .proj-row.is-open .proj-toggle { color: var(--c1); transform: rotate(45deg); }
+
+    /* ── Expandable body ── */
+    .proj-row-body {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.55s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .proj-row.is-open .proj-row-body { max-height: 1000px; }
+
+    .proj-row-body-inner {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      padding: 0 0 2.5rem 80px;  /* indent under the index column */
+    }
+
+    /* ── Detail blocks inside expanded body ── */
+    .proj-detail-block { display: flex; flex-direction: column; gap: 0.6rem; }
+
+    .proj-detail-label {
+      font-family: var(--font);
+      font-size: 0.58rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--c1);
+    }
+
+    .proj-detail-text {
+      font-size: 0.92rem;
+      color: var(--muted);
+      line-height: 1.75;
+      max-width: 680px;
+    }
+
+    /* Challenges + Learned side by side */
+    .proj-detail-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    /* Dividing line between Overview and Challenges/Learned */
+    .proj-detail-cols {
+      border-top: 1px solid var(--border);
+      padding-top: 1.8rem;
+    }
+
+    .proj-detail-actions {
+      display: flex;
+      gap: 0.7rem;
+      flex-wrap: wrap;
+    }
+
+    /* ── RESPONSIVE ────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .feat-grid { grid-template-columns: 1fr; }
+      .proj-detail-cols { grid-template-columns: 1fr; gap: 1.5rem; }
+      .proj-row-body-inner { padding-left: 0; }
+      .proj-row-header { grid-template-columns: 48px 1fr 32px; }
+    }
+
+  </style>
+
+</head>
+<body>
+
+  <!-- Background blobs (decorative, fixed) -->
+  <div id="blobs" aria-hidden="true">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+    <div class="blob blob-4"></div>
+    <div class="blob blob-5"></div>
+  </div>
+
+  <div id="cursor"      aria-hidden="true"></div>
+  <div id="cursor-ring" aria-hidden="true"></div>
+  <div id="progress"    role="progressbar" aria-hidden="true"></div>
+
+  <!-- Nav injected by components.js — will mark "Projects" as active -->
+  <div id="nav-mount"></div>
+
+  <main>
+
+    <!-- ── PAGE HERO ───────────────────────────────────────────── -->
+    <div class="page-hero">
+      <div class="page-hero-inner">
+
+        <div class="page-hero-eyebrow reveal">
+          <span></span>
+          <a href="/" class="back-link" style="margin-bottom:0">← Back to home</a>
+        </div>
+
+        <h1>
+          All<br>
+          <span class="outline">Projects.</span>
+        </h1>
+
+        <p class="page-hero-sub">
+          Everything I've built — with context, challenges, and what I learned along the way.
+        </p>
+
+      </div>
+    </div>
+
+    <!-- ── FEATURED CARDS ──────────────────────────────────────── -->
+    <!--
+      Rendered by YB.renderFeaturedCards().
+      Shows projects with featured: true from components.js.
+    -->
+    <section class="feat-section" aria-labelledby="feat-heading">
+      <div class="container">
+
+        <div class="section-eyebrow reveal"><span></span> Featured Work</div>
+        <h2 id="feat-heading" class="section-title reveal reveal-delay-1">Highlighted.</h2>
+
+        <!-- Rendered by YB.renderFeaturedCards() -->
+        <div id="feat-cards-mount" class="feat-grid"></div>
+
+      </div>
+    </section>
+
+    <!-- ── ALL PROJECTS ACCORDION ──────────────────────────────── -->
+    <!--
+      Rendered by YB.renderAllProjects().
+      Shows every project from components.js with expandable details.
+    -->
+    <section class="all-section" aria-labelledby="all-heading">
+      <div class="container">
+
+        <div class="all-section-header">
+          <div>
+            <div class="section-eyebrow reveal"><span></span> All Work</div>
+            <h2 id="all-heading" class="section-title reveal reveal-delay-1">The full list.</h2>
+          </div>
+          <!-- Project count injected by JS -->
+          <span class="proj-count reveal" id="proj-count-label"></span>
+        </div>
+
+        <!-- Rendered by YB.renderAllProjects() -->
+        <div id="all-projects-mount"></div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer injected by components.js -->
+  <div id="footer-mount"></div>
+
+  <!-- Shared components -->
+  <script src="assets/js/components.js"></script>
+
+  <!-- Page-level initialisation -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      YB.initShared();
+
+      // Render featured cards grid
+      YB.renderFeaturedCards('feat-cards-mount');
+
+      // Render full accordion list
+      YB.renderAllProjects('all-projects-mount');
+
+      // Show total project count
+      const countEl = document.getElementById('proj-count-label');
+      if (countEl) {
+        countEl.textContent = YB.PROJECTS.length + ' project' + (YB.PROJECTS.length !== 1 ? 's' : '');
+      }
+
+      // Reveal animation — always last so all rendered content is observed
+      YB.initReveal();
+    });
+  </script>
+
+</body>
+</html>

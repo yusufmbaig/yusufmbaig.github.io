@@ -1,70 +1,132 @@
-# Getting Started with Create React App
+# Yusuf Baig — Personal Portfolio
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+> Festival-inspired portfolio. Live at **https://yourusername.github.io**
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## File Structure
 
-### `npm start`
+```
+yourusername.github.io/
+│
+├── index.html              # Homepage (about, skills, life, featured projects, contact)
+├── projects.html           # Full projects page (cards + expandable case studies)
+├── 404.html                # Custom error page
+├── robots.txt              # Search engine crawl rules
+├── sitemap.xml             # Page index for Google / Bing
+├── README.md               # This file
+│
+└── assets/
+    ├── css/
+    │   └── global.css      # Shared design system (tokens, nav, footer, utilities)
+    ├── js/
+    │   └── components.js   # PROJECTS data + nav/footer injection + shared JS
+    ├── favicon/            # Favicon files (generate at favicon.io)
+    └── og-image.png        # Social share preview (1200×630px)
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Adding a Project
 
-### `npm test`
+Open `assets/js/components.js`. Find the `PROJECTS` array. Add a new object:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+```javascript
+{
+  id:          'my-project',         // unique slug (used as anchor link)
+  index:       '04',                 // display number
+  title:       'My Project',
+  shortDesc:   'One-line summary.',
+  description: 'Full case study paragraph.',
+  challenges:  'What was hard.',
+  learned:     'Key takeaway.',
+  tags:        ['React', 'Node.js'],
+  liveUrl:     'https://my-project.com',   // use '#' if none
+  githubUrl:   'https://github.com/...',   // use '#' if none
+  featured:    true,   // true = also shows on homepage teaser (aim for 2–3)
+},
+```
 
-### `npm run build`
+That's it. Both `index.html` and `projects.html` update automatically.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+---
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Customisation Quick-Reference
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+| What to change          | Where                                   |
+|-------------------------|-----------------------------------------|
+| Name & tagline          | `index.html` → hero section             |
+| Marquee keywords        | `index.html` → `.marquee-track`         |
+| About cards             | `index.html` → `.about-cards`           |
+| Skills tiles            | `index.html` → `.skills-grid`           |
+| Life/hobbies cards      | `index.html` → `#life`                  |
+| Contact links           | `index.html` → `.contact-links`         |
+| All project data        | `assets/js/components.js` → `PROJECTS`  |
+| Accent colours          | `assets/css/global.css` → `:root`       |
+| Nav logo / footer text  | `assets/js/components.js` → builder fns |
+| SEO meta tags           | `<head>` of each HTML file              |
+| Sitemap dates           | `sitemap.xml` → `<lastmod>`             |
 
-### `npm run eject`
+---
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## How the Shared Component System Works
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+`assets/js/components.js` exposes a `window.YB` namespace:
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+```javascript
+YB.initShared()                          // mounts nav + footer, starts cursor etc.
+YB.renderFeaturedRows(mountId)           // homepage: featured project rows
+YB.renderFeaturedCards(mountId)          // projects page: featured cards grid
+YB.renderAllProjects(mountId)            // projects page: full accordion list
+YB.initReveal()                          // scroll-reveal (call last, after renders)
+YB.PROJECTS                              // raw data array
+```
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+Each page's inline `<script>` calls these in order:
 
-## Learn More
+```javascript
+document.addEventListener('DOMContentLoaded', () => {
+  YB.initShared();
+  YB.renderFeaturedRows('mount-id');  // page-specific
+  YB.initReveal();                    // always last
+});
+```
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+**Nav active state** is detected automatically via `window.location.pathname`. The Projects link is highlighted on `projects.html`; home-page section anchors get `/#` prefixes when linked from other pages.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+## Deployment
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```bash
+git clone https://github.com/yourusername/yourusername.github.io.git
+cd yourusername.github.io
 
-### Analyzing the Bundle Size
+# Drop in all files, then:
+git add .
+git commit -m "Initial portfolio"
+git push origin main
+# Live at https://yourusername.github.io in ~60 seconds
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+### Adding a Custom Domain
 
-### Making a Progressive Web App
+1. Add `A` records pointing to GitHub's IPs (`185.199.108–111.153`)
+2. Repo → **Settings → Pages → Custom domain**
+3. Enable **Enforce HTTPS** after DNS propagates (~24 h)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+---
 
-### Advanced Configuration
+## SEO Checklist
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+- [ ] All `TODO` comments resolved in both HTML files
+- [ ] `og:image` → real 1200×630px image at `assets/og-image.png`
+- [ ] Favicon files at `assets/favicon/` (generate at https://favicon.io)
+- [ ] `sitemap.xml` dates updated, URL correct
+- [ ] Site submitted to [Google Search Console](https://search.google.com/search-console)
 
-### Deployment
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## Browser Support
 
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Chrome 90+, Firefox 90+, Safari 14+, Edge 90+, Mobile Safari (cursor hidden automatically).
