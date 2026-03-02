@@ -99,14 +99,14 @@ document.addEventListener('DOMContentLoaded', () => {
 ## Deployment
 
 ```bash
-git clone https://github.com/yourusername/yourusername.github.io.git
-cd yourusername.github.io
+git clone https://github.com/yusufmbaig/yusufmbaig.github.io.git
+cd https://yusufmbaig.github.io
 
 # Drop in all files, then:
 git add .
-git commit -m "Initial portfolio"
+git commit -m "update details"
 git push origin main
-# Live at https://yourusername.github.io in ~60 seconds
+# Live at https://yusufmbaig.github.io in ~60 seconds
 ```
 
 ### Adding a Custom Domain
@@ -120,8 +120,8 @@ git push origin main
 ## SEO Checklist
 
 - [ ] All `TODO` comments resolved in both HTML files
-- [ ] `og:image` → real 1200×630px image at `assets/og-image.png`
-- [ ] Favicon files at `assets/favicon/` (generate at https://favicon.io)
+- [X] `og:image` → real 1200×630px image at `assets/og-image.png`
+- [X] Favicon files at `assets/favicon/` (generate at https://favicon.io)
 - [ ] `sitemap.xml` dates updated, URL correct
 - [ ] Site submitted to [Google Search Console](https://search.google.com/search-console)
 
