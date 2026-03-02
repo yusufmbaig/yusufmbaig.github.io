@@ -1,0 +1,15 @@
+# robots.txt — Yusuf Baig Portfolio
+# https://yusufmbaig.github.io/robots.txt
+#
+# Instructs search engine crawlers on which parts of the site
+# they are allowed (or not allowed) to index.
+#
+# For a personal portfolio with no private pages, we allow
+# everything and point crawlers to the sitemap.
+
+# Allow all crawlers to index everything
+User-agent: *
+Allow: /
+
+# Point crawlers to the sitemap for efficient discovery
+Sitemap: https://yusufmbaig.github.io/sitemap.xml

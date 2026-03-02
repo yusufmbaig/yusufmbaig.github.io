@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<!--
+  404.html — Custom "Not Found" page
+  =====================================
+  GitHub Pages automatically serves this file when a visitor
+  navigates to a URL that doesn't exist on your site.
+
+  Styled to match the main portfolio so the experience is seamless.
+  The page auto-redirects to the homepage after 8 seconds.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 — Page Not Found | Yusuf Baig</title>
+  <meta name="robots" content="noindex, nofollow" />
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon/favicon-16x16.png">
+  <link rel="shortcut icon" href="/assets/favicon/favicon.ico">
+  <!-- Apple -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/assets/favicon/apple-touch-icon.png">
+  <!-- Android Chrome -->
+  <link rel="manifest" href="/assets/favicon/site.webmanifest">
+
+  <!-- Open Graph / Social Preview -->
+  <meta property="og:type"        content="website" />
+  <meta property="og:url"         content="https://yusufmbaig.github.io/" />
+  <meta property="og:title"       content="Yusuf Baig — Portfolio" />
+  <meta property="og:description" content="A driven professional in career transition." />
+  <meta property="og:image"       content="/assets/og-image.png" />
+  <meta name="twitter:card"  content="summary_large_image" />
+  <meta name="twitter:title" content="Yusuf Baig — Portfolio" />
+  <meta name="twitter:image" content="/assets/og-image.png" />
+
+  <!-- Shared design system (variables, reset, blobs, fonts, keyframes) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/global.css" />
+
+  <!-- 404-specific styles only -->
+  <style>
+    /* Override body for centred full-screen layout */
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+      overflow: hidden;
+    }
+
+    /* Only two blobs needed on this page */
+    .blob-1 { width: 500px; height: 500px; top: -200px; left: -150px; }
+    .blob-2 { width: 350px; height: 350px; bottom: -100px; right: -100px; animation-delay: -6s; }
+
+    /* Content wrapper */
+    .content { position: relative; z-index: 1; max-width: 480px; }
+
+    /* Giant gradient "404" */
+    .error-code {
+      font-family: var(--font);
+      font-size: clamp(6rem, 20vw, 12rem);
+      font-weight: 800;
+      letter-spacing: -0.05em;
+      line-height: 1;
+      background: linear-gradient(135deg, var(--c1), var(--c2), var(--c4));
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradShift 4s ease infinite;
+      margin-bottom: 1.5rem;
+    }
+
+    h1 {
+      font-family: var(--font);
+      font-size: 1.4rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 0.8rem;
+    }
+
+    p {
+      font-size: 0.95rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+
+    /* Countdown label */
+    .countdown {
+      font-family: var(--font);
+      font-size: 0.65rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+    .countdown em { color: var(--c1); font-style: normal; }
+
+    /* Reuse .btn .btn-primary from global.css */
+
+    /* Redirect progress bar (fills over 8s via CSS animation) */
+    .progress-wrap {
+      width: 100%;
+      height: 2px;
+      background: rgba(255, 255, 255, 0.06);
+      border-radius: 2px;
+      margin-top: 2.5rem;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--c1), var(--c2));
+      border-radius: 2px;
+      width: 0%;
+      animation: fill404 8s linear forwards;
+    }
+    @keyframes fill404 { to { width: 100%; } }
+  </style>
+</head>
+<body>
+
+  <!-- Blobs — colours from global.css variables -->
+  <div id="blobs" aria-hidden="true">
+    <div class="blob blob-1" style="background: var(--c4)"></div>
+    <div class="blob blob-2" style="background: var(--c1)"></div>
+  </div>
+
+  <div class="content">
+    <div class="error-code" aria-label="Error 404">404</div>
+    <h1>Page not found</h1>
+    <p>The page you're looking for doesn't exist — it may have been moved, deleted, or you may have followed a broken link.</p>
+    <div class="countdown">Redirecting in <em id="seconds">8</em> seconds</div>
+    <!-- Reuses .btn .btn-primary from global.css -->
+    <a href="/" class="btn btn-primary">Back to portfolio</a>
+    <div class="progress-wrap" aria-hidden="true">
+      <div class="progress-fill"></div>
+    </div>
+  </div>
+
+  <script>
+    // Countdown display + redirect
+    let count = 8;
+    const el = document.getElementById('seconds');
+    const interval = setInterval(() => {
+      count -= 1;
+      if (el) el.textContent = count;
+      if (count <= 0) {
+        clearInterval(interval);
+        window.location.href = '/';
+      }
+    }, 1000);
+  </script>
+
+</body>
+</html>
