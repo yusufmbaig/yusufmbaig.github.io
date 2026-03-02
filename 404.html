@@ -134,9 +134,6 @@
     <div class="blob blob-2" style="background: var(--c1)"></div>
   </div>
 
-  <div id="cursor"      aria-hidden="true"></div>
-  <div id="cursor-ring" aria-hidden="true"></div>
-
   <div class="content">
     <div class="error-code" aria-label="Error 404">404</div>
     <h1>Page not found</h1>
@@ -150,22 +147,17 @@
   </div>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      YB.initShared();
-      YB.initReveal();
-
-      // Countdown display + redirect
-      let count = 8;
-      const el = document.getElementById('seconds');
-      const interval = setInterval(() => {
-        count -= 1;
-        if (el) el.textContent = count;
-        if (count <= 0) {
-          clearInterval(interval);
-          window.location.href = '/';
-        }
-      }, 1000);
-    });
+    // Countdown display + redirect
+    let count = 8;
+    const el = document.getElementById('seconds');
+    const interval = setInterval(() => {
+      count -= 1;
+      if (el) el.textContent = count;
+      if (count <= 0) {
+        clearInterval(interval);
+        window.location.href = '/';
+      }
+    }, 1000);
   </script>
 
   <script>
